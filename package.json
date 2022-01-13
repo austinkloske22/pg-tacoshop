@@ -1,0 +1,85 @@
+{
+  "name": "pg-tacoshop",
+  "engines": {
+    "node": "^14"
+  },
+  "version": "1.0.0",
+  "description": "A sample CAP project to demonstrate use of cds-pg & develop multitenancy",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^5.7.3",
+    "cds-dbm": "^0.0.28",
+    "cds-pg": "^0.1.20",
+    "express": "^4"
+  },
+  "devDependencies": {
+    "sqlite3": "^5.0.2"
+  },
+  "scripts": {
+    "start": "cds run",
+    "docker:start:pg": "docker-compose -f docker-compose.yml up -d",
+    "docker:stop:pg": "docker-compose -f stack.yml down",
+    "deploy:pg": "node_modules/cds-dbm/dist/cli.js deploy --create-db",
+    "test:as-sqlite": "cds deploy -2 sqlite::memory: --no-save && cds serve all --in-memory"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "database"
+      },
+      "database": {
+        "impl": "cds-pg",
+        "model": [
+          "srv"
+        ],
+        "credentials": {
+          "host": "localhost",
+          "port": 5432,
+          "database": "tacoshop",
+          "user": "postgres",
+          "password": "postgres"
+        }
+      }
+    },
+    "migrations": {
+      "db": {
+        "schema": {
+          "default": "public",
+          "clone": "_cdsdbm_clone",
+          "reference": "_cdsdbm_ref"
+        },
+        "deploy": {
+          "tmpFile": "tmp/_autodeploy.json",
+          "undeployFile": "db/undeploy.json"
+        }
+      }
+    }
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "env": {
+      "es2020": true,
+      "node": true,
+      "jest": true,
+      "mocha": true
+    },
+    "globals": {
+      "SELECT": true,
+      "INSERT": true,
+      "UPDATE": true,
+      "DELETE": true,
+      "CREATE": true,
+      "DROP": true,
+      "CDL": true,
+      "CQL": true,
+      "CXL": true,
+      "cds": true
+    },
+    "rules": {
+      "no-console": "off",
+      "require-atomic-updates": "off"
+    }
+  }
+}
