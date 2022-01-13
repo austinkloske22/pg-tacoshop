@@ -47,4 +47,28 @@ Now you can start the CAP application by using:
 
 `cds run`
 
-Then open <http://localhost:4004/beershop/Beers> in the browser and you should see:
+Then open <http://localhost:4004/odata/v4/AdminService/UnitOfWeights> in the browser and you should see:
+```JSON
+// http://localhost:4004/odata/v4/AdminService/UnitOfWeights
+{
+  "@odata.context": "$metadata#UnitOfWeights",
+  "value": [
+    {
+      "Symbol": "G",
+      "Name": "Gram"
+    },
+    {
+      "Symbol": "KG",
+      "Name": "Kilogram"
+    },
+    {
+      "Symbol": "LBS",
+      "Name": "Pound"
+    },
+    {
+      "Symbol": "OZ",
+      "Name": "Ounce"
+    }
+  ]
+}
+```

@@ -5,23 +5,27 @@
   },
   "version": "1.0.0",
   "description": "A sample CAP project to demonstrate use of cds-pg & develop multitenancy",
-  "repository": "<Add your repository here>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/austinkloske22/pg-tacoshop.git"
+  },
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
     "@sap/cds": "^5.7.3",
-    "cds-dbm": "^0.0.28",
-    "cds-pg": "^0.1.20",
+    "cds-pg": "^0.1.16",
     "express": "^4"
   },
   "devDependencies": {
-    "sqlite3": "^5.0.2"
+    "sqlite3": "^5.0.2",
+    "cds-dbm": "^0.0.28"
   },
   "scripts": {
     "start": "cds run",
     "docker:start:pg": "docker-compose -f docker-compose.yml up -d",
     "docker:stop:pg": "docker-compose -f stack.yml down",
     "deploy:pg": "node_modules/cds-dbm/dist/cli.js deploy --create-db",
+    "deploy:pg:load": "node_modules/cds-dbm/dist/cli.js deploy --load-via delta",
     "test:as-sqlite": "cds deploy -2 sqlite::memory: --no-save && cds serve all --in-memory"
   },
   "cds": {
@@ -29,18 +33,28 @@
       "db": {
         "kind": "database"
       },
+      "auth": {
+        "[heroku]": {
+          "impl": "./heroku/mock-auth-handler.js"
+        }
+      },
       "database": {
+        "dialect": "plain",
         "impl": "cds-pg",
         "model": [
           "srv"
         ],
         "credentials": {
-          "host": "localhost",
-          "port": 5432,
-          "database": "tacoshop",
-          "user": "postgres",
-          "password": "postgres"
+          "[heroku]": {
+            "ssl": {
+              "rejectUnauthorized": false
+            }
+          }
         }
+      },
+      "uaa": {
+        "[heroku]": {},
+        "kind": "xsuaa"
       }
     },
     "migrations": {
@@ -55,31 +69,19 @@
           "undeployFile": "db/undeploy.json"
         }
       }
-    }
-  },
-  "eslintConfig": {
-    "extends": "eslint:recommended",
-    "env": {
-      "es2020": true,
-      "node": true,
-      "jest": true,
-      "mocha": true
     },
-    "globals": {
-      "SELECT": true,
-      "INSERT": true,
-      "UPDATE": true,
-      "DELETE": true,
-      "CREATE": true,
-      "DROP": true,
-      "CDL": true,
-      "CQL": true,
-      "CXL": true,
-      "cds": true
-    },
-    "rules": {
-      "no-console": "off",
-      "require-atomic-updates": "off"
+    "build": {
+      "tasks": [
+        {
+          "use": "node-cf",
+          "src": "srv"
+        },
+        {
+          "use": "postgres-cf",
+          "src": "db"
+        }
+      ]
     }
   }
+
 }
