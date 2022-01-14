@@ -1,0 +1,29 @@
+
+### Authentication Header
+@auth = Authorization: Bearer {{accessToken}}
+
+### ------------------------------------------------------------------------
+# Health Check
+### ------------------------------------------------------------------------
+GET {{authEndpoint}}/health
+
+### Authenticate Active Environment via auth endpoint (ctl+alt+E)
+# @name rdpAuth
+POST {{authEndpoint}}/oauth/token
+Content-Type: application/json;charset=UTF-8;IEEE754Compatible=true
+Accept: application/json;charset=UTF-8;IEEE754Compatible=true
+
+{
+    "username"    : "{{username}}",
+    "password"    : "{{password}}"
+}
+
+#### Variable Response
+@accessToken = {{rdpAuth.response.body.$.access_token}}
+
+### ------------------------------------------------------------------------
+# Who Am I?
+### --
+GET {{cdsServer}}/whoami
+Content-Type: application/json;charset=UTF-8;IEEE754Compatible=true
+{{auth}}

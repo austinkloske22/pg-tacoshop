@@ -1,5 +1,5 @@
 
-To run the example with in multitenant mode, we must enable the xsuaa authentication microservice. Create a `xs-security.json` file with the following content:
+To run the example with in multitenant mode, we must enable the xsuaa authentication microservice. Create a `xs-security.json` file with the following content: 
 
 ```JSON
 {
@@ -61,8 +61,55 @@ To run the example with in multitenant mode, we must enable the xsuaa authentica
 Create new xsuaa service and key then view credentials:
 
 ```
-cf create-service xsuaa application pg-tacoshop-uaa -c ./xs-security-vscode.json
-cf create-service-key pg-tacoshop-vscode-uaa default
-cf service-key pg-tacoshop-vscode-uaa default
+cf create-service xsuaa application pg-tacoshop-uaa -c ./xs-security.json
+cf create-service-key pg-tacoshop-uaa default
+cf service-key pg-tacoshop-uaa default
+```
+
+Add the the xsuaa array to the `default-env.json` in the root of your project and copy & paste the credintials from the cf service-key cmd above into your file. 
+
+```JSON
+"xsuaa": [
+        {
+          "label": "xsuaa",
+          "plan": "application",
+          "name": "shipping-execution-uaa",
+          "tags": [
+            "xsuaa",
+            "vscode"
+          ],
+          "credentials": {
+
+          }
+        }
+      ]
+```
+
+create another `/auth/default-env.json` file in the auth directory. Copy the credentials above into the new file.
+
+
+```JSON
+{
+	"VCAP_SERVICES": {
+        "xsuaa": [
+            {
+            "label": "xsuaa",
+            "plan": "application",
+            "name": "shipping-execution-uaa",
+            "tags": [
+                "xsuaa",
+                "vscode"
+            ],
+            "credentials": {
+
+            }
+        }
+      ]
+    }
+}
 
 ```
+
+Navigate to the auth module and build:  `cd auth && npm install`
+
+Run the auth module: `npm run start`

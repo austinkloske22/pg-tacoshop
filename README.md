@@ -4,7 +4,8 @@
 
 ### Prerequisites
 
-To get started quickly you need docker and docker-compose.
+To get started quickly you need docker and docker-compose. We'll be using `VS Code` as our Code IDE. You'll need access to SAP BTP and the CF cli tools to manage micro-services.
+I switch to [Business Application Studio](https://developers.sap.com/tutorials/appstudio-onboarding.html) for CF cmds because the CLI is not compatible with Apple M1 architecture at the time of writing.
 
 ### Setup
 
@@ -73,8 +74,13 @@ Then open <http://localhost:4004/odata/v4/AdminService/UnitOfWeights> in the bro
 }
 ```
 
-## Multitenant Setup 
-- [XSUAA Authorization](./Docs/xsuaa.md)
+## Multitenant Setup
+
+- [Authentication Module](./docs/authentication.md)
+- [VS Code Settings](./docs/settings.md)
+- [SaaS Provisioning Service](./docs/registry.md)
+
+
 
 
 
