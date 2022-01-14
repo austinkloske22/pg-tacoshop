@@ -72,3 +72,10 @@ Then open <http://localhost:4004/odata/v4/AdminService/UnitOfWeights> in the bro
   ]
 }
 ```
+
+## Multitenant Setup 
+- [XSUAA Authorization](./Docs/xsuaa.md)
+
+
+
+
