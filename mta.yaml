@@ -1,0 +1,95 @@
+## Generated mta.yaml based on template version 0.4.0
+## appName = pg-tacoshop
+## language=nodejs; multiTenant=true
+## approuter=
+_schema-version: "3.1"
+ID: pg-tacoshop
+version: 0.0.1
+description: "Taco Franchise on postgreSQL SaaS"
+parameters:
+  enable-parallel-deployments: true
+  keep-existing-routes: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install --production
+        - npx cds-dbm build --production
+modules:
+  - name: pg-tacoshop
+    type: html5
+    path: app
+    parameters:
+      memory: 256M
+      disk-quota: 512M
+    provides:
+      - name: app_api
+        properties:
+          url: ${default-url}
+          application: ${app-name}
+    properties:
+      TENANT_HOST_PATTERN: '^(.*)-${space}-${app-name}.${default-domain}'
+    requires:
+      - name: pg-tacoshop-uaa
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv
+          url: ~{url}
+          forwardAuthToken: true
+  # --------------------- SERVER MODULE ------------------------
+  - name: pg-tacoshop-srv
+  # ------------------------------------------------------------
+    type: nodejs
+    path: gen/srv
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          url: ${default-url}
+    properties:
+      SAP_JWT_TRUST_ACL:
+        - clientid: "*"
+          identityzone: "sap-provisioning"
+    requires:
+      - name: pg-tacoshop-database
+      - name: pg-tacoshop-uaa
+      - name: pg-tacoshop-registry
+      - name: pg-tacoshop-dest      
+resources:
+  - name: pg-tacoshop-database
+    type: org.cloudfoundry.existing-service
+  - name: pg-tacoshop-uaa
+    type: org.cloudfoundry.managed-service
+    requires: 
+      - name: app_api
+    properties:
+      XSAPPNAME: ${xsuaa-app}
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-plan: application
+      xsuaa-app: ${space}-~{app_api/application}
+      config:
+        xsappname: ${xsuaa-app}
+  - name: pg-tacoshop-registry
+    type: org.cloudfoundry.managed-service
+    requires:
+      - name: pg-tacoshop-uaa
+    parameters:
+      service: saas-registry
+      service-plan: application
+      service-name: pg-tacoshop-registry
+      config:
+        xsappname: ~{pg-tacoshop-uaa/XSAPPNAME}
+        appName: pg-tacoshop
+        displayName: 'Taco Stand Franchise'
+        description: 'SaaS with postgreSQL proof-of-concept'
+        category: 'Demo'
+        appUrls:
+          onSubscription: https://${org}-${space}-pg-tacoshop-srv.${default-domain}/callback/v1.0/tenants/{tenantId}
+          getDependencies: https://${org}-${space}-pg-tacoshop-srv.${default-domain}/callback/v1.0/dependencies
+  - name: pg-tacoshop-dest
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
