@@ -36,16 +36,16 @@
     ],
     "role-collections": [
         {
-            "name": "Tacostand_Administrator",
-            "description": "Tacostand Administrator",
+            "name": "tacoshop_Administrator",
+            "description": "tacoshop Administrator",
             "role-template-references": [
                 "$XSAPPNAME.Administrator",
                 "$XSAPPNAME.User"
             ]
         },
         {
-            "name": "Tacostand_User",
-            "description": "Tacostand User",
+            "name": "tacoshop_User",
+            "description": "tacoshop User",
             "role-template-references": [
                 "$XSAPPNAME.User"
             ]

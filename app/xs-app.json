@@ -1,0 +1,33 @@
+{
+    "welcomeFile": "index.html",
+    "authenticationMethod": "route",
+    "logout": {
+        "logoutEndpoint": "/logout",
+        "logoutPage": "/logout.html"
+    },
+    "routes": [
+        {
+            "source": "^/srv/(.*)$",
+            "authenticationType": "xsuaa",
+            "destination": "srv",
+            "csrfProtection": true
+        },
+        {
+            "source": "/odata/v4/AdminService(.*)",
+            "destination": "srv",
+            "authenticationType": "xsuaa",
+            "csrfProtection": true
+        },
+        {
+            "source": "/odata/v4/CatalogService(.*)",
+            "destination": "srv",
+             "authenticationType": "xsuaa",
+             "csrfProtection": true
+        },
+        {
+            "source": "^/(.*)",
+            "localDir": "resources",
+            "authenticationType": "xsuaa"
+        }
+    ]
+}
