@@ -28,7 +28,8 @@
     "docker:stop:pg": "docker-compose -f stack.yml down",
     "deploy:pg": "node_modules/cds-dbm/dist/cli.js deploy --create-db",
     "deploy:pg:load": "node_modules/cds-dbm/dist/cli.js deploy --load-via delta",
-    "test:as-sqlite": "cds deploy -2 sqlite::memory: --no-save && cds serve all --in-memory"
+    "test:as-sqlite": "cds deploy -2 sqlite::memory: --no-save && cds serve all --in-memory",
+    "deploy:cf": "cf deploy mta_archives/pg-tacoshop_0.0.1.mtar"
   },
   "cds": {
     "requires": {
@@ -73,19 +74,6 @@
           "undeployFile": "db/undeploy.json"
         }
       }
-    },
-    "build": {
-      "tasks": [
-        {
-          "use": "node-cf",
-          "src": "srv"
-        },
-        {
-          "use": "postgres-cf",
-          "src": "db"
-        }
-      ]
     }
   }
-
 }

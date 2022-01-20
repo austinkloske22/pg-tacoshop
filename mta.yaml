@@ -9,12 +9,6 @@ description: "Taco Franchise on postgreSQL SaaS"
 parameters:
   enable-parallel-deployments: true
   keep-existing-routes: true
-build-parameters:
-  before-all:
-    - builder: custom
-      commands:
-        - npm install --production
-        - npx cds-dbm build --production
 modules:
   - name: pg-tacoshop
     type: html5
